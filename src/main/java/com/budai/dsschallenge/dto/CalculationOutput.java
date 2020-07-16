@@ -6,6 +6,6 @@ import java.util.List;
 
 @Data
 public class CalculationOutput {
-    List<OrderOutput> orders;
-    List<Program> program;
+    final List<OrderOutput> orders;
+    final List<Program> program;
 }

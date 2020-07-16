@@ -1,21 +1,15 @@
 package com.budai.dsschallenge.dto;
 
 
+import lombok.Data;
+
 import java.util.Date;
 
-/*
-
-Dátum
-Gép
-Kezdő időpont
-Záró időpont
-Megrendelésszám
-
- */
+@Data
 public class Program {
-    private Date date;
-    private String machineId;
-    private Date startTime;
-    private Date endTime;
-    private String orderId;
+    private final Date date;
+    private final String machineId;
+    private final Date startTime;
+    private final Date endTime;
+    private final String orderId;
 }
