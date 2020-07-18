@@ -5,7 +5,7 @@ import com.budai.dsschallenge.dto.CalculationOutput;
 import com.budai.dsschallenge.dto.Order;
 import com.budai.dsschallenge.dto.OrderOutput;
 import com.budai.dsschallenge.dto.Program;
-import com.budai.dsschallenge.ordering.comparators.OrderDeadlineComparator;
+import com.budai.dsschallenge.ordering.comparators.OrderFineComparator;
 import com.budai.dsschallenge.service.DateUtil;
 
 import java.time.LocalDateTime;
@@ -13,17 +13,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class MinimizeDeadlineStrategy implements OrderingStrategy {
+public class MinimizeFineStrategy implements OrderingStrategy {
 
     DateUtil dateUtil;
 
-    public MinimizeDeadlineStrategy(DateUtil dateUtil) {
+    public MinimizeFineStrategy(DateUtil dateUtil) {
         this.dateUtil = dateUtil;
     }
 
     @Override
     public CalculationOutput calculateOptimalOrdering(List<Order> orders, LocalDateTime currentDate) {
-        Collections.sort(orders, new OrderDeadlineComparator());
+        Collections.sort(orders, new OrderFineComparator());
         Machines machines = new Machines();
         List<OrderOutput> orderOutputs = new ArrayList<>();
         for (Order order : orders) {

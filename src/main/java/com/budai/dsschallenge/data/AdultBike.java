@@ -1,7 +1,7 @@
 package com.budai.dsschallenge.data;
 
 
-public class AdultBike implements Product {
+public class AdultBike extends AbstractProduct {
     @Override
     public int cuttingTime() {
         return 8;

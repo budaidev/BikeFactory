@@ -69,14 +69,14 @@ public class Machines {
 
     }
 
-    public int[] scheduleAllTaskInOrder(String orderId, int quantity, List<Integer> joblengths) {
+    public TaskTime scheduleAllTaskInOrder(String orderId, int quantity, List<Integer> joblengths) {
         int[] cut = scheduleTask(TaskType.CUT, orderId, quantity, joblengths.get(0), new int[quantity]);
         int[] bend = scheduleTask(TaskType.BEND, orderId, quantity, joblengths.get(1), cut);
         int[] weld = scheduleTask(TaskType.WELD, orderId, quantity, joblengths.get(2), bend);
         int[] test = scheduleTask(TaskType.TEST, orderId, quantity, joblengths.get(3), weld);
         int[] paint = scheduleTask(TaskType.PAINT, orderId, quantity, joblengths.get(4), test);
         int[] pack = scheduleTask(TaskType.PACK, orderId, quantity, joblengths.get(5), paint);
-        return pack;
+        return new TaskTime(Arrays.stream(cut).min().getAsInt() - joblengths.get(0), Arrays.stream(pack).max().getAsInt());
     }
 
     public int[] scheduleTask(TaskType task, String orderId, int quantity, int joblength, int startTime[]) {

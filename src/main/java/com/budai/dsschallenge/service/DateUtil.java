@@ -15,16 +15,16 @@ public class DateUtil {
     private static final long WORKING_MINUTES_PER_DAY = WORKING_HOURS_PER_DAY * MINUTES;
 
 
-    public int getWorkingMinutes(final Date startTime, final Date endTime) {
+    public int getWorkingMinutes(final LocalDateTime startTime, LocalDateTime endTime) {
         if (null == startTime || null == endTime) {
             throw new IllegalStateException();
         }
-        if (endTime.before(startTime)) {
+        if (endTime.isBefore(startTime)) {
             return 0;
         }
 
-        LocalDateTime from = toLocalDateTime(startTime);
-        LocalDateTime to = toLocalDateTime(endTime);
+        LocalDateTime from = startTime;
+        LocalDateTime to = endTime;
 
         LocalDate fromDay = from.toLocalDate();
         LocalDate toDay = to.toLocalDate();
@@ -53,6 +53,25 @@ public class DateUtil {
         return (int) (allWorkingMinutes - tailRedundantMinutes - headRedundanMinutes);
     }
 
+    public LocalDateTime getDateFromMinutes(int minutes, LocalDateTime startDate) {
+        long days = minutes / WORKING_MINUTES_PER_DAY;
+        long remainder = minutes % WORKING_MINUTES_PER_DAY;
+
+        LocalDateTime dateTime = startDate;
+        dateTime = dateTime.plusDays(days);
+
+        int minutesThisDay = (WORK_HOUR_END - dateTime.getHour()) * 60 - dateTime.getMinute();
+        if (remainder < minutesThisDay) {
+            return dateTime.plusMinutes(remainder);
+        } else {
+            remainder -= minutesThisDay;
+            dateTime = dateTime.plusDays(1);
+            dateTime.minusMinutes(remainder);
+            return dateTime;
+        }
+    }
+
+
     private boolean isWorkingDay(final LocalDateTime time) {
         // return time.getDayOfWeek().getValue() < DayOfWeek.SATURDAY.getValue();
         return true;
@@ -67,6 +86,26 @@ public class DateUtil {
         return Instant.ofEpochMilli(dateToConvert.getTime() / 1000 * 1000)
                 .atZone(ZoneId.systemDefault())
                 .toLocalDateTime();
+    }
+
+    public Date toDate(LocalDateTime dateToConvert) {
+        return java.util.Date.from(dateToConvert
+                .atZone(ZoneId.systemDefault())
+                .toInstant());
+    }
+
+    public int getDayDifferenceBetweenDates(LocalDateTime firstDate, LocalDateTime secondDate) {
+        long diff = secondDate.until(firstDate, ChronoUnit.MINUTES);
+        return (int) (diff / WORKING_MINUTES_PER_DAY);
+    }
+
+    public int getOverdue(LocalDateTime firstDate, LocalDateTime secondDate) {
+        int diffDay = getDayDifferenceBetweenDates(firstDate, secondDate);
+        if (diffDay <= 0) {
+            return 0;
+        } else {
+            return diffDay;
+        }
     }
 
 }

@@ -34,30 +34,30 @@ public class MachinesTest {
 
     @Test
     public void scheduleAllTask() {
-        int[] result = machines.scheduleAllTaskInOrder("ABC123", 1, List.of(5, 10, 8, 5, 12, 10));
-        assertEquals(50, result[0]);
+        TaskTime result = machines.scheduleAllTaskInOrder("ABC123", 1, List.of(5, 10, 8, 5, 12, 10));
+        assertEquals(50, result.getEndTime());
 
     }
 
     @Test
     public void scheduleAllTaskSix() {
-        int[] result = machines.scheduleAllTaskInOrder("ABC123", 6, List.of(5, 10, 8, 5, 12, 10));
+        TaskTime result = machines.scheduleAllTaskInOrder("ABC123", 6, List.of(5, 10, 8, 5, 12, 10));
         for (MachineUsage use : machines.getLog()) {
             System.out.println(use);
         }
-        assertEquals(75, result[5]);
+        assertEquals(75, result.getEndTime());
 
     }
 
     @Test
     public void scheduleAllTaskThreeTwotimes() {
         machines.scheduleAllTaskInOrder("ABC123", 3, List.of(5, 10, 8, 5, 12, 10));
-        int[] result = machines.scheduleAllTaskInOrder("ABC456", 3, List.of(5, 10, 8, 5, 12, 10));
+        TaskTime result = machines.scheduleAllTaskInOrder("ABC456", 3, List.of(5, 10, 8, 5, 12, 10));
         for (MachineUsage use : machines.getLog()) {
             System.out.println(use);
         }
         printGantDiagram(machines.getLog());
-        assertEquals(75, result[2]);
+        assertEquals(75, result.getEndTime());
 
     }
 
@@ -88,9 +88,7 @@ public class MachinesTest {
     }
 
     private String getGannt(List<Integer> list, int x, int max) {
-        if (x == max) {
-            return "|";
-        } else if (list.contains(x)) {
+        if (list.contains(x)) {
             return "x";
         } else {
             return " ";

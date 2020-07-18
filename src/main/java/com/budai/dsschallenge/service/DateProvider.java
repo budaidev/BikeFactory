@@ -1,13 +1,10 @@
 package com.budai.dsschallenge.service;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class DateProvider {
 
-    public Date getCurrentDate() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(2020, 7, 20, 6, 0, 0);
-        return calendar.getTime();
+    public LocalDateTime getCurrentDate() {
+        return LocalDateTime.of(2020, 7, 20, 6, 0, 0);
     }
 }

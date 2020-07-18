@@ -5,15 +5,19 @@ import com.budai.dsschallenge.data.ProductCode;
 import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvCustomBindByName;
 import com.opencsv.bean.CsvDate;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /*
 https://attacomsian.com/blog/spring-boot-upload-parse-csv-file#
  */
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Order {
     @CsvBindByName(column = "Azonosító")
     private String id;
@@ -23,7 +27,7 @@ public class Order {
     private int quantity;
     @CsvBindByName(column = "Határidő")
     @CsvDate("dd.MM. hh:mm")
-    private Date deadline;
+    private LocalDateTime deadline;
     @CsvBindByName(column = "Profit/db (Ft)")
     private int profit;
     @CsvBindByName(column = "Késési büntetés/nap (össz) (Ft)")

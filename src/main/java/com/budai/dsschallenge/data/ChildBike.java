@@ -1,6 +1,6 @@
 package com.budai.dsschallenge.data;
 
-public class ChildBike implements Product {
+public class ChildBike extends AbstractProduct {
     @Override
     public int cuttingTime() {
         return 5;
