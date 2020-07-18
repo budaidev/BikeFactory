@@ -16,16 +16,16 @@ https://attacomsian.com/blog/spring-boot-upload-parse-csv-file#
 @Data
 public class Order {
     @CsvBindByName(column = "Azonosító")
-    private final String id;
+    private String id;
     @CsvCustomBindByName(column = "Termék", converter = ProductCodeConverter.class)
-    private final ProductCode code;
+    private ProductCode code;
     @CsvBindByName(column = "Darabszám")
-    private final int quantity;
+    private int quantity;
     @CsvBindByName(column = "Határidő")
     @CsvDate("dd.MM. hh:mm")
-    private final Date deadline;
+    private Date deadline;
     @CsvBindByName(column = "Profit/db (Ft)")
-    private final int profit;
+    private int profit;
     @CsvBindByName(column = "Késési büntetés/nap (össz) (Ft)")
-    private final int fine;
+    private int fine;
 }

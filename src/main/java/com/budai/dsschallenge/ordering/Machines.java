@@ -4,9 +4,7 @@ import com.budai.dsschallenge.dto.MachineUsage;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class Machines {
 
@@ -17,7 +15,21 @@ public class Machines {
     private PriorityQueue<Machine> painting;
     private PriorityQueue<Machine> packing;
 
-    List<MachineUsage> usageLog;
+    private List<MachineUsage> usageLog;
+
+    public static final Map<TaskType, String> machineName;
+
+    static {
+        Map<TaskType, String> m = new HashMap<>();
+        m.put(TaskType.BEND, "Hajlito");
+        m.put(TaskType.CUT, "Vago");
+        m.put(TaskType.WELD, "Hegeszto");
+        m.put(TaskType.TEST, "Tesztelo");
+        m.put(TaskType.PAINT, "Festo");
+        m.put(TaskType.PACK, "Csomagolo");
+
+        machineName = Collections.unmodifiableMap(m);
+    }
 
     public Machines() {
         cutting = init(6);
@@ -38,30 +50,59 @@ public class Machines {
         return pq;
     }
 
-    public int scheduleCutting(String orderId, int quantity, int joblength) {
-        int capacity = cutting.size();
-        int remaining = quantity;
-        int batchSize = 0;
-        int newEndtime = 0;
-        if (quantity > capacity) {
-            batchSize = quantity / capacity;
-            remaining = quantity % capacity;
-            for (int i = 0; i < capacity; i++) {
-                newEndtime = updateMachineJob(joblength * batchSize);
-            }
+    private PriorityQueue<Machine> getMachineQueue(TaskType type) throws IllegalArgumentException {
+        switch (type) {
+            case CUT:
+                return cutting;
+            case BEND:
+                return bending;
+            case PAINT:
+                return painting;
+            case PACK:
+                return packing;
+            case WELD:
+                return welding;
+            case TEST:
+                return testing;
+        }
+        throw new IllegalArgumentException("Unknown task type");
 
-        }
-        for (int i = 0; i < remaining; i++) {
-            newEndtime = updateMachineJob(joblength);
-        }
-        return newEndtime;
     }
 
-    private int updateMachineJob(int joblength) {
-        Machine machine = cutting.poll();
-        int newEndtime = machine.getEndtime() + joblength;
-        cutting.add(new Machine(newEndtime, machine.getRank()));
-        return newEndtime;
+    public int[] scheduleAllTaskInOrder(String orderId, int quantity, List<Integer> joblengths) {
+        int[] cut = scheduleTask(TaskType.CUT, orderId, quantity, joblengths.get(0), new int[quantity]);
+        int[] bend = scheduleTask(TaskType.BEND, orderId, quantity, joblengths.get(1), cut);
+        int[] weld = scheduleTask(TaskType.WELD, orderId, quantity, joblengths.get(2), bend);
+        int[] test = scheduleTask(TaskType.TEST, orderId, quantity, joblengths.get(3), weld);
+        int[] paint = scheduleTask(TaskType.PAINT, orderId, quantity, joblengths.get(4), test);
+        int[] pack = scheduleTask(TaskType.PACK, orderId, quantity, joblengths.get(5), paint);
+        return pack;
+    }
+
+    public int[] scheduleTask(TaskType task, String orderId, int quantity, int joblength, int startTime[]) {
+        int[] endtimes = new int[quantity];
+        for (int i = 0; i < startTime.length; i++) {
+            endtimes[i] = updateMachineJob(task, joblength, startTime[i], orderId);
+        }
+        return endtimes;
+    }
+
+    public static String getMachineName(TaskType type, int rank) {
+        return machineName.get(type) + "-" + rank;
+    }
+
+    private int updateMachineJob(TaskType task, int joblength, int startTime, String orderId) {
+        PriorityQueue<Machine> machines = getMachineQueue(task);
+        Machine machine = machines.poll();
+        int oldTime = Math.max(machine.getEndtime(), startTime);
+        int newEndTime = oldTime + joblength;
+        machines.add(new Machine(newEndTime, machine.getRank()));
+        usageLog.add(new MachineUsage(oldTime, newEndTime, orderId, getMachineName(task, machine.getRank())));
+        return newEndTime;
+    }
+
+    public List<MachineUsage> getLog() {
+        return usageLog;
     }
 }
 
