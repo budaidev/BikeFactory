@@ -1,7 +1,8 @@
 package com.budai.dsschallenge.service;
 
 import com.budai.dsschallenge.dto.Order;
-import org.junit.jupiter.api.BeforeAll;
+import com.budai.dsschallenge.service.exception.CsvReadingException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -22,12 +23,39 @@ public class CsvReaderTest {
     }
 
     @Test
-    public void readCsvTest() throws IOException {
+    public void readCsvTest() throws IOException, CsvReadingException {
         ClassLoader classLoader = this.getClass().getClassLoader();
         File file = new File(Objects.requireNonNull(classLoader.getResource("testorders.csv")).getFile());
         List<Order> orders = csvReader.readOrders(file);
 
         assertEquals(15, orders.size());
         System.out.println(orders);
+    }
+
+    @Test
+    public void readCsvMissingColumn() throws IOException, CsvReadingException {
+        ClassLoader classLoader = this.getClass().getClassLoader();
+        File file = new File(Objects.requireNonNull(classLoader.getResource("missingcolumn.csv")).getFile());
+        Assertions.assertThrows(CsvReadingException.class, () -> {
+            List<Order> orders = csvReader.readOrders(file);
+        });
+    }
+
+    @Test
+    public void readCsvBadProductCode() throws IOException, CsvReadingException {
+        ClassLoader classLoader = this.getClass().getClassLoader();
+        File file = new File(Objects.requireNonNull(classLoader.getResource("badproductcode.csv")).getFile());
+        Assertions.assertThrows(CsvReadingException.class, () -> {
+            List<Order> orders = csvReader.readOrders(file);
+        });
+    }
+
+    @Test
+    public void readCsvBadQuantity() throws IOException, CsvReadingException {
+        ClassLoader classLoader = this.getClass().getClassLoader();
+        File file = new File(Objects.requireNonNull(classLoader.getResource("idquantityswap.csv")).getFile());
+        Assertions.assertThrows(CsvReadingException.class, () -> {
+            List<Order> orders = csvReader.readOrders(file);
+        });
     }
 }
