@@ -1,6 +1,6 @@
 package com.budai.dsschallenge.configuration;
 
-import com.budai.dsschallenge.ordering.MinimizeFineStrategy;
+import com.budai.dsschallenge.ordering.MinimizeFinePerJoblengthRatio;
 import com.budai.dsschallenge.ordering.OrderingStrategy;
 import com.budai.dsschallenge.service.CsvReader;
 import com.budai.dsschallenge.service.DateProvider;
@@ -18,7 +18,7 @@ public class AppConfiguration {
 
     @Bean
     public OrderingStrategy orderingStrategy() {
-        return new MinimizeFineStrategy(dateUtil());
+        return new MinimizeFinePerJoblengthRatio(dateUtil());
     }
 
     @Bean

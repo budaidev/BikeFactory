@@ -3,6 +3,7 @@ package com.budai.dsschallenge.controller;
 import com.budai.dsschallenge.dto.CalculationOutput;
 import com.budai.dsschallenge.dto.Order;
 import com.budai.dsschallenge.service.CsvReader;
+import com.budai.dsschallenge.service.CsvWriter;
 import com.budai.dsschallenge.service.OrderService;
 import com.budai.dsschallenge.service.exception.CsvReadingException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,6 +33,11 @@ public class BikeController {
     @PostMapping("/optimal-ordering")
     public CalculationOutput getCalculation(@RequestParam("file") MultipartFile file) throws IOException, CsvReadingException {
         List<Order> orders = csvReader.readOrders(file);
-        return orderService.calculateOptimalOrdering(orders);
+        CalculationOutput result = orderService.calculateOptimalOrdering(orders);
+
+        CsvWriter csvWriter = new CsvWriter();
+        csvWriter.writeOrderOutputToCsv(result.getOrders());
+        csvWriter.writeProgram(result.getProgram());
+        return result;
     }
 }
