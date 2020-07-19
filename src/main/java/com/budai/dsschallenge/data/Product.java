@@ -18,4 +18,6 @@ public interface Product {
 
     List<Integer> getJobLengths();
 
+    int getMinimumMinutesToComplete(int quantity);
+
 }

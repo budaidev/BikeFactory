@@ -1,5 +1,6 @@
 package com.budai.dsschallenge.ordering;
 
+import com.budai.dsschallenge.configuration.MachineNumber;
 import com.budai.dsschallenge.dto.MachineUsage;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,12 +33,12 @@ public class Machines {
     }
 
     public Machines() {
-        cutting = init(6);
-        bending = init(2);
-        welding = init(3);
-        testing = init(1);
-        painting = init(4);
-        packing = init(3);
+        cutting = init(MachineNumber.CUTTING);
+        bending = init(MachineNumber.BENDING);
+        welding = init(MachineNumber.WELDING);
+        testing = init(MachineNumber.TESTING);
+        painting = init(MachineNumber.PAINTING);
+        packing = init(MachineNumber.PACKING);
 
         usageLog = new ArrayList<>();
     }

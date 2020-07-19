@@ -3,8 +3,8 @@ package com.budai.dsschallenge.functional;
 import com.budai.dsschallenge.dto.CalculationOutput;
 import com.budai.dsschallenge.dto.Order;
 import com.budai.dsschallenge.dto.OrderOutput;
-import com.budai.dsschallenge.ordering.BruteForceStrategy;
 import com.budai.dsschallenge.ordering.MinimizeDeadlineStrategy;
+import com.budai.dsschallenge.ordering.MinimizeFinePerJoblengthRatio;
 import com.budai.dsschallenge.ordering.MinimizeFineStrategy;
 import com.budai.dsschallenge.service.CsvReader;
 import com.budai.dsschallenge.service.DateProvider;
@@ -41,7 +41,6 @@ public class TestOrderingStrategies {
         CalculationOutput calc = strategy.calculateOptimalOrdering(orders, dateProvider.getCurrentDate());
         int sum = 0;
         for (OrderOutput out : calc.getOrders()) {
-            System.out.println(out);
             sum += out.getProfit();
         }
         System.out.println(sum);
@@ -55,22 +54,25 @@ public class TestOrderingStrategies {
         CalculationOutput calc = new MinimizeFineStrategy(dateUtil).calculateOptimalOrdering(orders, dateProvider.getCurrentDate());
         int sum = 0;
         for (OrderOutput out : calc.getOrders()) {
-            System.out.println(out);
             sum += out.getProfit();
         }
         System.out.println(sum);
     }
 
+    @Test
     public void test3() throws IOException, CsvReadingException {
+        long start = System.currentTimeMillis();
         ClassLoader classLoader = this.getClass().getClassLoader();
         File file = new File(Objects.requireNonNull(classLoader.getResource("testorders.csv")).getFile());
         List<Order> orders = csvReader.readOrders(file);
-        CalculationOutput calc = new BruteForceStrategy(dateUtil).calculateOptimalOrdering(orders, dateProvider.getCurrentDate());
+        CalculationOutput calc = new MinimizeFinePerJoblengthRatio(dateUtil).calculateOptimalOrdering(orders, dateProvider.getCurrentDate());
         int sum = 0;
         for (OrderOutput out : calc.getOrders()) {
-            System.out.println(out);
             sum += out.getProfit();
         }
         System.out.println(sum);
+        long finish = System.currentTimeMillis();
+        long timeElapsed = finish - start;
+        System.out.println(timeElapsed + " ms");
     }
 }

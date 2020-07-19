@@ -3,13 +3,14 @@ package com.budai.dsschallenge.dto;
 
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 public class Program {
-    private final Date date;
+    private final LocalDate date;
     private final String machineId;
-    private final Date startTime;
-    private final Date endTime;
+    private final LocalDateTime startTime;
+    private final LocalDateTime endTime;
     private final String orderId;
 }

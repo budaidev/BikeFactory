@@ -1,15 +1,13 @@
 package com.budai.dsschallenge.ordering;
 
 import com.budai.dsschallenge.data.BikeFactory;
-import com.budai.dsschallenge.dto.CalculationOutput;
-import com.budai.dsschallenge.dto.Order;
-import com.budai.dsschallenge.dto.OrderOutput;
-import com.budai.dsschallenge.dto.Program;
+import com.budai.dsschallenge.dto.*;
 import com.budai.dsschallenge.service.DateUtil;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class AbstractOrderingStrategy implements OrderingStrategy {
 
@@ -26,7 +24,17 @@ public abstract class AbstractOrderingStrategy implements OrderingStrategy {
             orderOutputs.add(orderOutput);
         }
 
+        List<MachineUsage> usage = machines.getLog();
 
-        return new CalculationOutput(orderOutputs, new ArrayList<Program>());
+        List<Program> program = usage.stream().map(u -> new Program(
+                dateUtil.getDateFromMinutes(u.getStartTime(), currentDate).toLocalDate(),
+                u.getMachineId(),
+                dateUtil.getDateFromMinutes(u.getStartTime(), currentDate),
+                dateUtil.getDateFromMinutes(u.getEndTime(), currentDate),
+                u.getOrderId()
+        )).collect(Collectors.toList());
+
+
+        return new CalculationOutput(orderOutputs, program);
     }
 }

@@ -1,5 +1,6 @@
 package com.budai.dsschallenge.ordering;
 
+import com.budai.dsschallenge.data.TeenagerBike;
 import com.budai.dsschallenge.dto.MachineUsage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,14 +35,14 @@ public class MachinesTest {
 
     @Test
     public void scheduleAllTask() {
-        TaskTime result = machines.scheduleAllTaskInOrder("ABC123", 1, List.of(5, 10, 8, 5, 12, 10));
+        TaskTime result = machines.scheduleAllTaskInOrder("ABC123", 1, Arrays.asList(5, 10, 8, 5, 12, 10));
         assertEquals(50, result.getEndTime());
 
     }
 
     @Test
     public void scheduleAllTaskSix() {
-        TaskTime result = machines.scheduleAllTaskInOrder("ABC123", 6, List.of(5, 10, 8, 5, 12, 10));
+        TaskTime result = machines.scheduleAllTaskInOrder("ABC123", 6, Arrays.asList(5, 10, 8, 5, 12, 10));
         for (MachineUsage use : machines.getLog()) {
             System.out.println(use);
         }
@@ -51,13 +52,24 @@ public class MachinesTest {
 
     @Test
     public void scheduleAllTaskThreeTwotimes() {
-        machines.scheduleAllTaskInOrder("ABC123", 3, List.of(5, 10, 8, 5, 12, 10));
-        TaskTime result = machines.scheduleAllTaskInOrder("ABC456", 3, List.of(5, 10, 8, 5, 12, 10));
+        machines.scheduleAllTaskInOrder("ABC123", 3, Arrays.asList(5, 10, 8, 5, 12, 10));
+        TaskTime result = machines.scheduleAllTaskInOrder("ABC456", 3, Arrays.asList(5, 10, 8, 5, 12, 10));
         for (MachineUsage use : machines.getLog()) {
             System.out.println(use);
         }
         printGantDiagram(machines.getLog());
         assertEquals(75, result.getEndTime());
+
+    }
+
+    @Test
+    public void scheduleAllMegrendeles10() {
+        TaskTime result = machines.scheduleAllTaskInOrder("MEGR010", 142, new TeenagerBike().getJobLengths());
+        for (MachineUsage use : machines.getLog()) {
+            System.out.println(use);
+        }
+        printGantDiagram(machines.getLog());
+        assertEquals(1118, result.getEndTime());
 
     }
 
