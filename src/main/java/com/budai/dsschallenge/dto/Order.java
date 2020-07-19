@@ -7,10 +7,6 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-/*
-https://attacomsian.com/blog/spring-boot-upload-parse-csv-file#
- */
-
 @Data
 @AllArgsConstructor
 public class Order {

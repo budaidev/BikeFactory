@@ -7,6 +7,8 @@ import com.budai.dsschallenge.service.CsvWriter;
 import com.budai.dsschallenge.service.OrderService;
 import com.budai.dsschallenge.service.exception.CsvReadingException;
 import io.swagger.v3.oas.annotations.Operation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +26,8 @@ public class BikeController {
     OrderService orderService;
     CsvReader csvReader;
 
+    Logger logger = LoggerFactory.getLogger(BikeController.class);
+
     public BikeController(@Autowired OrderService orderService, @Autowired CsvReader csvReader) {
         this.orderService = orderService;
         this.csvReader = csvReader;
@@ -32,6 +36,7 @@ public class BikeController {
     @Operation(summary = "Get optimal schedule for the input orders")
     @PostMapping("/optimal-ordering")
     public CalculationOutput getCalculation(@RequestParam("file") MultipartFile file) throws IOException, CsvReadingException {
+        logger.info("calling optimal ordering");
         List<Order> orders = csvReader.readOrders(file);
         CalculationOutput result = orderService.calculateOptimalOrdering(orders);
 

@@ -4,6 +4,8 @@ import com.budai.dsschallenge.dto.CalculationOutput;
 import com.budai.dsschallenge.dto.Order;
 import com.budai.dsschallenge.ordering.comparators.OrderLengthPerFineComparator;
 import com.budai.dsschallenge.service.DateUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,12 +19,15 @@ public class MinimizeFinePerJoblengthRatio extends AbstractOrderingStrategy {
 
     DateUtil dateUtil;
 
+    Logger logger = LoggerFactory.getLogger(MinimizeFinePerJoblengthRatio.class);
+
     public MinimizeFinePerJoblengthRatio(DateUtil dateUtil) {
         this.dateUtil = dateUtil;
     }
 
     @Override
     public CalculationOutput calculateOptimalOrdering(List<Order> orders, LocalDateTime currentDate) {
+        logger.info("calculateOptimalOrdering...");
         CalculationOutput result = null;
         int bestScore = Integer.MIN_VALUE;
         Collections.sort(orders, new OrderLengthPerFineComparator());
@@ -33,12 +38,12 @@ public class MinimizeFinePerJoblengthRatio extends AbstractOrderingStrategy {
             int sum = current.getOrders().stream().mapToInt(x -> x.getProfit()).sum();
             if (sum > bestScore) {
                 bestScore = sum;
+                logger.info("new best score " + bestScore);
                 result = current;
                 orders = swapped;
                 deadLines = current.getOrders().stream().mapToInt(o -> dateUtil.getDayDifferenceBetweenDates(o.getCompleteDate(), o.getOriginalDeadline())).boxed().collect(Collectors.toList());
             }
         }
-        System.out.println(deadLines);
         return result;
     }
 
