@@ -30,16 +30,8 @@ public class BikeController {
 
     @Operation(summary = "Get optimal schedule for the input orders")
     @PostMapping("/optimal-ordering")
-    public CalculationOutput getCalculation(@RequestParam("file") MultipartFile file) {
-        try {
-            List<Order> orders = csvReader.readOrders(file);
-            return orderService.calculateOptimalOrdering(orders);
-        } catch (IOException | CsvReadingException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-
-
+    public CalculationOutput getCalculation(@RequestParam("file") MultipartFile file) throws IOException, CsvReadingException {
+        List<Order> orders = csvReader.readOrders(file);
+        return orderService.calculateOptimalOrdering(orders);
     }
 }
